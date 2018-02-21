@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding:utf-8
 
 import numpy as np
 import random
@@ -16,6 +17,7 @@ def gradcheck_naive(f, x):
 
     rndstate = random.getstate()
     random.setstate(rndstate)
+
     fx, grad = f(x) # Evaluate function value at original point
     h = 1e-4        # Do not change this!
 
@@ -36,9 +38,15 @@ def gradcheck_naive(f, x):
         # before calling f(x) each time. This will make it possible
         # to test cost functions with built in randomness later.
 
-        ### YOUR CODE HERE:
-        raise NotImplementedError
-        ### END YOUR CODE
+        random.setstate(rndstate)
+        x[ix] += h
+        f_forward, _ = f(x)
+        random.setstate(rndstate)
+        x[ix] -= 2*h
+        f_backward, _ = f(x)
+        numgrad = (f_forward - f_backward)/(2 * h)
+        # return to source value
+        x[ix] += h
 
         # Compare gradients
         reldiff = abs(numgrad - grad[ix]) / max(1, abs(numgrad), abs(grad[ix]))
@@ -49,7 +57,7 @@ def gradcheck_naive(f, x):
                 grad[ix], numgrad)
             return
 
-        it.iternext() # Step to next dimension
+        it.iternext()  # Step to next dimension
 
     print "Gradient check passed!"
 
@@ -75,9 +83,12 @@ def your_sanity_checks():
     your additional tests be graded.
     """
     print "Running your sanity checks..."
-    ### YOUR CODE HERE
-    raise NotImplementedError
-    ### END YOUR CODE
+    quad = lambda x: (np.sum(x ** 2), x * 2)
+
+    gradcheck_naive(quad, np.array(123.456))      # scalar test
+    gradcheck_naive(quad, np.random.randn(3,))    # 1-D test
+    gradcheck_naive(quad, np.random.randn(4,5))   # 2-D test
+    print ""
 
 
 if __name__ == "__main__":
