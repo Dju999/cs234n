@@ -1,5 +1,8 @@
 #!/usr/bin/env python
-
+"""
+ Example:
+     python q4_sentiment.py --pretrained
+"""
 import argparse
 import numpy as np
 import matplotlib
@@ -47,9 +50,8 @@ def getSentenceFeatures(tokens, wordVectors, sentence):
     # - sentVector: feature vector for the sentence
 
     sentVector = np.zeros((wordVectors.shape[1],))
-
     ### YOUR CODE HERE
-    raise NotImplementedError
+    sentVector = wordVectors[np.array([tokens[ind] for ind in sentence]), :].mean(axis=0)
     ### END YOUR CODE
 
     assert sentVector.shape == (wordVectors.shape[1],)
@@ -63,7 +65,7 @@ def getRegularizationValues():
     """
     values = None   # Assign a list of floats in the block below
     ### YOUR CODE HERE
-    raise NotImplementedError
+    values = np.array([1e-4, 1e-3, 1e-2, 1e-1, 5e-1, 7e-1, 1.1, 1.5])
     ### END YOUR CODE
     return sorted(values)
 
@@ -89,7 +91,11 @@ def chooseBestModel(results):
     bestResult = None
 
     ### YOUR CODE HERE
-    raise NotImplementedError
+    best_score = 0
+    for i in results:
+        if i['test'] > best_score:
+            best_score = i['test']
+            bestResult = i
     ### END YOUR CODE
 
     return bestResult
